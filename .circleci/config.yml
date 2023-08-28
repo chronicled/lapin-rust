@@ -1,0 +1,79 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/rust
+      - image: rabbitmq
+    steps:
+      - checkout
+      - run:
+          name: Version information
+          command: rustc --version; cargo --version; rustup --version
+      - run:
+          name: Calculate dependencies
+          command: cargo generate-lockfile
+      - restore_cache:
+          keys:
+            - v4-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+      - run:
+          name: Build all targets
+          command: cargo build --all --all-targets
+      - save_cache:
+          paths:
+            - /usr/local/cargo/registry
+            - target/debug/.fingerprint
+            - target/debug/build
+            - target/debug/deps
+          key: v4-cargo-cache-{{ arch }}-{{ checksum "Cargo.lock" }}
+      - run:
+          name: Run all tests
+          command: cargo test --all
+  deploy_lapin:
+    docker:
+      - image: circleci/rust
+    steps:
+      - checkout
+      - run:
+          name: Install cloudsmith CLI
+          command: sudo apt update && sudo apt install python python3-pip && pip3 install cloudsmith-cli
+      - run:
+          name: Generate package file
+          command: cargo package
+      - run:
+          name: Push to Cloudsmith
+          command: ~/.local/bin/cloudsmith push cargo --republish chronicled/platform-v2 target/package/lapin-*.crate
+  deploy_lapin_futures:
+    docker:
+      - image: circleci/rust
+    steps:
+      - checkout
+      - run:
+          name: Install cloudsmith CLI
+          command: sudo apt update && sudo apt install python python3-pip && pip3 install cloudsmith-cli
+      - run:
+          name: Generate package file
+          command: cargo package --manifest-path futures/Cargo.toml
+      - run:
+          name: Push to Cloudsmith
+          command: ~/.local/bin/cloudsmith push cargo --republish chronicled/platform-v2 target/package/lapin-futures-*.crate
+workflows:
+  version: 2
+  lapin-futures-rs-workflow:
+    jobs:
+      - test
+      - deploy_lapin:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+                - /epic.*/
+      - deploy_lapin_futures:
+          requires:
+            - deploy_lapin
+          filters:
+            branches:
+              only:
+                - master
+                - /epic.*/

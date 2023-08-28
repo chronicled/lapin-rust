@@ -1,0 +1,238 @@
+{
+  "connection": {
+    "start-ok": {
+      "metadata": {
+        "extra_args": [
+          {
+            "name": "wait_handle",
+            "type": "WaitHandle<Connection>"
+          },
+          {
+            "name": "credentials",
+            "type": "Credentials"
+          }
+        ],
+        "end_hook": {
+          "params": ["wait_handle", "credentials"]
+        }
+      }
+    },
+    "open": {
+      "metadata": {
+        "internal": true,
+        "bypass_wait_handle": true,
+        "extra_args": [
+          {
+            "name": "wait_handle",
+            "type": "WaitHandle<Connection>"
+          }
+        ],
+        "end_hook": {
+          "params": ["wait_handle"]
+        }
+      }
+    },
+    "close": {
+      "metadata": {
+        "internal": true,
+        "end_hook": true
+      }
+    },
+    "close-ok": {
+      "metadata": {
+        "channel_deinit": true,
+        "received_hook": true,
+        "end_hook": true
+      }
+    },
+    "blocked": {
+      "metadata": {
+        "internal": true
+      }
+    },
+    "unblocked": {
+      "metadata": {
+        "internal": true
+      }
+    },
+    "update-secret": {
+      "metadata": {
+        "internal": true
+      }
+    }
+  },
+  "channel": {
+    "open": {
+      "metadata": {
+        "internal": true,
+        "channel_init": true,
+        "confirmation": {
+          "type": "Channel"
+        }
+      }
+    },
+    "open-ok": {
+      "metadata": {
+        "channel_init": true
+      }
+    },
+    "close": {
+      "metadata": {
+        "require_wrapper": true,
+        "end_hook": true
+      }
+    },
+    "close-ok": {
+      "metadata": {
+        "channel_deinit": true,
+        "received_hook": true,
+        "end_hook": true
+      }
+    },
+    "flow": {
+      "metadata": {
+        "confirmation": {
+          "type": "Boolean"
+        }
+      }
+    },
+    "flow-ok": {
+      "metadata": {
+        "confirmation": {
+          "type": "()"
+        }
+      }
+    }
+  },
+  "confirm": {
+    "select-ok": {
+      "metadata": {
+        "received_hook": true
+      }
+    }
+  },
+  "queue": {
+    "declare": {
+      "metadata": {
+        "confirmation": {
+          "type": "Queue"
+        },
+        "nowait_hook": {
+          "fields": ["queue: queue.into()"]
+        }
+      }
+    },
+    "delete": {
+      "metadata": {
+        "state": [
+          {
+            "name": "queue",
+            "type": "ShortString",
+            "use_str_ref": true
+          }
+        ],
+        "confirmation": {
+          "type": "LongUInt"
+        },
+        "nowait_hook": true
+      }
+    },
+    "purge": {
+      "metadata": {
+        "confirmation": {
+          "type": "LongUInt"
+        }
+      }
+    }
+  },
+  "exchange": {
+    "declare": {
+      "metadata": {
+        "require_wrapper": true
+      }
+    }
+  },
+  "basic": {
+    "consume": {
+      "metadata": {
+        "require_wrapper": true,
+        "state": [
+          {
+            "name": "queue",
+            "type": "ShortString",
+            "use_str_ref": true
+          }
+        ],
+        "confirmation": {
+          "type": "Consumer"
+        },
+        "nowait_hook": {
+          "fields": ["consumer_tag: consumer_tag.into()"],
+          "exhaustive_args": true
+        }
+      }
+    },
+    "cancel": {
+      "metadata": {
+        "nowait_hook": {
+          "fields": ["consumer_tag: consumer_tag.into()"],
+          "exhaustive_args": true
+        }
+      }
+    },
+    "publish": {
+      "metadata": {
+        "carry_headers": true,
+        "extra_args": [
+          {
+            "name": "payload",
+            "type": "Vec<u8>"
+          },
+          {
+            "name": "properties",
+            "type": "BasicProperties"
+          }
+        ],
+        "start_hook": true
+      }
+    },
+    "get": {
+      "metadata": {
+        "confirmation": {
+          "type": "Option<BasicGetMessage>"
+        },
+        "state": [
+          {
+            "name": "queue",
+            "type": "ShortString",
+            "use_str_ref": true
+          }
+        ]
+      }
+    },
+    "ack": {
+      "metadata": {
+        "end_hook": {
+          "params": ["multiple", "delivery_tag"]
+        }
+      }
+    },
+    "recover-async": {
+      "metadata": {
+        "end_hook": true
+      }
+    },
+    "recover-ok": {
+      "metadata": {
+        "received_hook": true
+      }
+    },
+    "nack": {
+      "metadata": {
+        "end_hook": {
+          "params": ["multiple", "delivery_tag"]
+        }
+      }
+    }
+  }
+}
