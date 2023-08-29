@@ -2,7 +2,10 @@
 name = "lapin-futures"
 version = "0.28.6-alpha"
 edition = "2018"
-authors = ["Geoffroy Couprie <geo.couprie@gmail.com>", "Marc-Antoine Perennou <Marc-Antoine@Perennou.com>"]
+authors = [
+  "Geoffroy Couprie <geo.couprie@gmail.com>",
+  "Marc-Antoine Perennou <Marc-Antoine@Perennou.com>",
+]
 repository = "https://github.com/sozu-proxy/lapin"
 readme = "README.md"
 documentation = "https://docs.rs/lapin-futures"
@@ -12,20 +15,20 @@ categories = ["database"]
 license = "MIT"
 
 [features]
-default    = ["native-tls"]
+default = ["native-tls"]
 native-tls = ["lapin/native-tls"]
-openssl    = ["lapin/openssl"]
-rustls     = ["lapin/rustls"]
+openssl = ["lapin/openssl"]
+rustls = ["lapin/rustls"]
 
 [dependencies.lapin]
 path = "../"
-registry = "chronicled-platform-v2"
+registry = "chronicled-platform-v2-public"
 version = "0.28.6-alpha"
 default-features = false
 
 [dependencies]
-futures = {version = "^0.1", registry = "crates-io" }
-log = {version = "^0.4", registry = "crates-io" }
+futures = { version = "^0.1", registry = "crates-io" }
+log = { version = "^0.4", registry = "crates-io" }
 
 [dev-dependencies]
-env_logger = {version = "^0.7", registry = "crates-io" }
+env_logger = { version = "^0.7", registry = "crates-io" }

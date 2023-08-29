@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/rust
+      - image: cimg/rust:1.60
       - image: rabbitmq
     steps:
       - checkout
@@ -30,7 +30,7 @@ jobs:
           command: cargo test --all
   deploy_lapin:
     docker:
-      - image: circleci/rust
+      - image: cimg/rust:1.60
     steps:
       - checkout
       - run:
@@ -41,10 +41,10 @@ jobs:
           command: cargo package
       - run:
           name: Push to Cloudsmith
-          command: ~/.local/bin/cloudsmith push cargo --republish chronicled/platform-v2 target/package/lapin-*.crate
+          command: ~/.local/bin/cloudsmith push cargo --republish chronicled/platform-v2-public target/package/lapin-*.crate
   deploy_lapin_futures:
     docker:
-      - image: circleci/rust
+      - image: cimg/rust:1.60
     steps:
       - checkout
       - run:
@@ -55,7 +55,7 @@ jobs:
           command: cargo package --manifest-path futures/Cargo.toml
       - run:
           name: Push to Cloudsmith
-          command: ~/.local/bin/cloudsmith push cargo --republish chronicled/platform-v2 target/package/lapin-futures-*.crate
+          command: ~/.local/bin/cloudsmith push cargo --republish chronicled/platform-v2-public target/package/lapin-futures-*.crate
 workflows:
   version: 2
   lapin-futures-rs-workflow:
